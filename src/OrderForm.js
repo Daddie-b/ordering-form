@@ -1,5 +1,6 @@
 // src/OrderForm.js
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function OrderForm() {
   const [formData, setFormData] = useState({
@@ -9,14 +10,21 @@ function OrderForm() {
     quantity: 1,
   });
 
+  const [message, setMessage] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Order placed! \nName: ${formData.name} \nCake Type: ${formData.cakeType} \nMessage: ${formData.message} \nQuantity: ${formData.quantity}`);
+    try {
+      const response = await axios.post('http://localhost:5000/api/orders', formData);
+      setMessage('Order placed successfully!');
+    } catch (error) {
+      setMessage('Failed to place order.');
+    }
   };
 
   return (
@@ -71,6 +79,7 @@ function OrderForm() {
         />
       </div>
       <button type="submit">Place Order</button>
+      {message && <p>{message}</p>}
     </form>
   );
 }
