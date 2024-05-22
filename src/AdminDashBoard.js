@@ -1,6 +1,7 @@
 // src/AdminDashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './AdminDashboard.css'; // Import the CSS file for styling
 
 function AdminDashboard() {
   const [orders, setOrders] = useState([]);
@@ -16,9 +17,9 @@ function AdminDashboard() {
   }, []);
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <table>
+    <div className="admin-dashboard-container">
+      <h2>Admin Dashboard</h2>
+      <table className="order-table">
         <thead>
           <tr>
             <th>Name</th>
