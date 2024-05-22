@@ -1,7 +1,7 @@
 // src/OrderForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './OrderForm.css'; // Import the CSS file for styling
+import './OrderForm.css';
 
 function OrderForm() {
   const [formData, setFormData] = useState({
@@ -11,20 +11,46 @@ function OrderForm() {
     quantity: 1,
   });
 
-  const [message, setMessage] = useState('');
+  const [price, setPrice] = useState(0);
+  const [prices, setPrices] = useState({
+    Chocolate: 0,
+    Vanilla: 0,
+    'Red Velvet': 0,
+    Carrot: 0,
+  });
+
+  useEffect(() => {
+    // Fetch prices for each cake type from the backend
+    axios.get('http://localhost:5000/api/prices')
+      .then(response => {
+        setPrices(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching prices:', error);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Update the price based on the selected cake type and quantity
+    setPrice(prices[value] * formData.quantity);
+  };
+
+  const handleQuantityChange = (e) => {
+    const { value } = e.target;
+    setFormData({ ...formData, quantity: value });
+    // Update the price based on the selected cake type and quantity
+    setPrice(prices[formData.cakeType] * value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/orders', formData);
-      setMessage('Order placed successfully!');
+      await axios.post('http://localhost:5000/api/orders', { ...formData, price });
+      // Optionally, you can display a success message or redirect the user
     } catch (error) {
-      setMessage('Failed to place order.');
+      // Handle error
     }
   };
 
@@ -76,13 +102,23 @@ function OrderForm() {
             id="quantity"
             name="quantity"
             value={formData.quantity}
-            onChange={handleChange}
+            onChange={handleQuantityChange}
             min="1"
             required
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="price">Total Payment:</label>
+          <input
+            type="text"
+            id="price"
+            name="price"
+            value={price}
+            readOnly // Prevents the user from changing the price manually
+            required
+          />
+        </div>
         <button type="submit" className="submit-btn">Place Order</button>
-        {message && <p className="message">{message}</p>}
       </form>
     </div>
   );
