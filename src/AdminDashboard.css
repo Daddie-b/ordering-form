@@ -25,4 +25,27 @@
   .order-table tbody tr:nth-child(even) {
     background-color: #f9f9f9;
   }
+  /* src/AdminDashboard.css */
+.admin-dashboard-container {
+    padding: 20px;
+  }
+  
+  .cakes-list, .add-cake-form, .orders-list {
+    margin-bottom: 20px;
+  }
+  
+  .orders-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .orders-list th, .orders-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .orders-list th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
   

@@ -6,51 +6,54 @@ import './OrderForm.css';
 function OrderForm() {
   const [formData, setFormData] = useState({
     name: '',
-    cakeType: '',
-    message: '',
-    quantity: 1,
+    cakes: [{ cakeType: '', message: '', quantity: 1, price: 0 }],
   });
 
-  const [price, setPrice] = useState(0);
-  const [prices, setPrices] = useState({
-    Chocolate: 0,
-    Vanilla: 0,
-    'Red Velvet': 0,
-    Carrot: 0,
-  });
+  const [cakeOptions, setCakeOptions] = useState([]);
 
   useEffect(() => {
-    // Fetch prices for each cake type from the backend
-    axios.get('http://localhost:5000/api/prices')
-      .then(response => {
-        setPrices(response.data);
+    axios.get('http://localhost:5000/api/cakes')
+      .then((response) => {
+        setCakeOptions(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching prices:', error);
+      .catch((error) => {
+        console.error('There was an error fetching the cakes!', error);
       });
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (index, e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedCakes = [...formData.cakes];
+    updatedCakes[index][name] = value;
+
     // Update the price based on the selected cake type and quantity
-    setPrice(prices[value] * formData.quantity);
+    if (name === 'cakeType' || name === 'quantity') {
+      const selectedCake = cakeOptions.find(cake => cake._id === updatedCakes[index].cakeType);
+      if (selectedCake) {
+        updatedCakes[index].price = selectedCake.price * updatedCakes[index].quantity;
+      }
+    }
+
+    setFormData({ ...formData, cakes: updatedCakes });
   };
 
-  const handleQuantityChange = (e) => {
-    const { value } = e.target;
-    setFormData({ ...formData, quantity: value });
-    // Update the price based on the selected cake type and quantity
-    setPrice(prices[formData.cakeType] * value);
+  const handleAddCake = () => {
+    setFormData({ ...formData, cakes: [...formData.cakes, { cakeType: '', message: '', quantity: 1, price: 0 }] });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/orders', { ...formData, price });
-      // Optionally, you can display a success message or redirect the user
+      await axios.post('http://localhost:5000/api/orders', formData);
+      // Display a success message or redirect the user after successful order submission
+      alert('Order placed successfully!');
+      setFormData({
+        name: '',
+        cakes: [{ cakeType: '', message: '', quantity: 1, price: 0 }],
+      });
     } catch (error) {
-      // Handle error
+      console.error('Error submitting order:', error);
+      // Optionally, display an error message to the user
     }
   };
 
@@ -65,59 +68,63 @@ function OrderForm() {
             id="name"
             name="name"
             value={formData.name}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="cakeType">Cake Type:</label>
-          <select
-            id="cakeType"
-            name="cakeType"
-            value={formData.cakeType}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a cake type</option>
-            <option value="Chocolate">Chocolate</option>
-            <option value="Vanilla">Vanilla</option>
-            <option value="Red Velvet">Red Velvet</option>
-            <option value="Carrot">Carrot</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="message">Message on Cake:</label>
-          <input
-            type="text"
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="quantity">Quantity:</label>
-          <input
-            type="number"
-            id="quantity"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleQuantityChange}
-            min="1"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="price">Total Payment:</label>
-          <input
-            type="text"
-            id="price"
-            name="price"
-            value={price}
-            readOnly // Prevents the user from changing the price manually
-            required
-          />
-        </div>
+        {formData.cakes.map((cake, index) => (
+          <div key={index} className="cake-order-group">
+            <div className="form-group">
+              <label htmlFor={`cakeType-${index}`}>Cake Type:</label>
+              <select
+                id={`cakeType-${index}`}
+                name="cakeType"
+                value={cake.cakeType}
+                onChange={(e) => handleChange(index, e)}
+                required
+              >
+                <option value="">Select a cake type</option>
+                {cakeOptions.map((cakeOption) => (
+                  <option key={cakeOption._id} value={cakeOption._id}>{cakeOption.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor={`message-${index}`}>Message on Cake:</label>
+              <input
+                type="text"
+                id={`message-${index}`}
+                name="message"
+                value={cake.message}
+                onChange={(e) => handleChange(index, e)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor={`quantity-${index}`}>Quantity:</label>
+              <input
+                type="number"
+                id={`quantity-${index}`}
+                name="quantity"
+                value={cake.quantity}
+                onChange={(e) => handleChange(index, e)}
+                min="1"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor={`price-${index}`}>Total Price:</label>
+              <input
+                type="text"
+                id={`price-${index}`}
+                name="price"
+                value={cake.price}
+                readOnly
+                required
+              />
+            </div>
+          </div>
+        ))}
+        <button type="button" className="add-cake-btn" onClick={handleAddCake}>Add Another Cake</button>
         <button type="submit" className="submit-btn">Place Order</button>
       </form>
     </div>

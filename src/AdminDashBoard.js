@@ -1,13 +1,25 @@
-// src/AdminDashboard.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './AdminDashboard.css'; 
+import './AdminDashboard.css';
 
 function AdminDashboard() {
+  const [cakes, setCakes] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [price, setPrice] = useState('');
+  const [newCake, setNewCake] = useState({
+    name: '',
+    price: 0,
+  });
 
   useEffect(() => {
+    axios.get('http://localhost:5000/api/cakes')
+      .then((response) => {
+        setCakes(response.data);
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the cakes!', error);
+      });
+
+    // Fetch orders
     axios.get('http://localhost:5000/api/orders')
       .then((response) => {
         setOrders(response.data);
@@ -17,54 +29,113 @@ function AdminDashboard() {
       });
   }, []);
 
-  const handlePriceChange = (e) => {
-    setPrice(e.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewCake({ ...newCake, [name]: value });
   };
 
-  const handleSubmitPrice = (orderId) => {
-    axios.put(`http://localhost:5000/api/orders/${orderId}`, { price })
-      .then(() => {
-        // Optionally, you can update the UI to reflect the price change
-        // For example, you can fetch the orders again after updating the price
+  const handleAddCake = () => {
+    axios.post('http://localhost:5000/api/cakes', newCake)
+      .then((response) => {
+        setCakes([...cakes, response.data]);
+        setNewCake({ name: '', price: 0 });
       })
       .catch((error) => {
-        console.error('There was an error updating the price!', error);
+        console.error('There was an error adding the cake!', error);
       });
+  };
+
+  const handleDeleteCake = (cakeId) => {
+    axios.delete(`http://localhost:5000/api/cakes/${cakeId}`)
+      .then(() => {
+        setCakes(prevCakes => prevCakes.filter(cake => cake._id !== cakeId));
+      })
+      .catch((error) => {
+        console.error('There was an error deleting the cake!', error);
+      });
+  };
+
+  const handleCompleteOrder = (orderId) => {
+    console.log(`Deleting order with ID: ${orderId}`);
+    axios.delete(`http://localhost:5000/api/orders/${orderId}`)
+      .then(() => {
+        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
+        console.log(`Order with ID: ${orderId} deleted successfully`);
+      })
+      .catch((error) => {
+        console.error('There was an error completing the order!', error);
+      });
+  };
+
+  // Function to get cake name based on cakeType ID
+  const getCakeName = (cakeType) => {
+    const cake = cakes.find(cake => cake._id === cakeType);
+    return cake ? cake.name : 'Unknown Cake';
   };
 
   return (
     <div className="admin-dashboard-container">
       <h2>Admin Dashboard</h2>
-      <table className="order-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Cake Type</th>
-            <th>Message</th>
-            <th>Quantity</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order._id}>
-              <td>{order.name}</td>
-              <td>{order.cakeType}</td>
-              <td>{order.message}</td>
-              <td>{order.quantity}</td>
-              <td>
-                <input
-                  type="number"
-                  value={price}
-                  onChange={handlePriceChange}
-                  placeholder="Enter price"
-                />
-                <button onClick={() => handleSubmitPrice(order._id)}>Set Price</button>
-              </td>
-            </tr>
+      <div className="cakes-list">
+        <h3>Cakes List</h3>
+        <ul>
+          {cakes.map((cake) => (
+            <li key={cake._id}>
+              {cake.name} - ${cake.price}
+              <button onClick={() => handleDeleteCake(cake._id)}>Delete</button>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+      </div>
+      <div className="add-cake-form">
+        <h3>Add New Cake</h3>
+        <input
+          type="text"
+          name="name"
+          value={newCake.name}
+          onChange={handleChange}
+          placeholder="Cake Name"
+        />
+        <input
+          type="number"
+          name="price"
+          value={newCake.price}
+          onChange={handleChange}
+          placeholder="Cake Price"
+        />
+        <button onClick={handleAddCake}>Add Cake</button>
+      </div>
+      <div className="orders-list">
+        <h3>Orders List</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Cake Type</th>
+              <th>Message</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              order.cakes.map((cake, index) => (
+                <tr key={`${order._id}-${index}`}>
+                  {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
+                  <td>{getCakeName(cake.cakeType)}</td>
+                  <td>{cake.message}</td>
+                  <td>{cake.quantity}</td>
+                  <td>${cake.price}</td>
+                  <td>
+                    <button onClick={() => handleCompleteOrder(order._id)}>Complete Order</button>
+                  </td>
+                </tr>
+              ))
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
