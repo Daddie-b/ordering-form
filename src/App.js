@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './LandingPage';
 import OrderForm from './OrderForm';
-import AdminDashboard from './AdminDashBoard';
+import AdminDashboard from './AdminDashBoard.js';
 
 
 function App() {
