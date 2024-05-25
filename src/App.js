@@ -1,16 +1,18 @@
-// src/App.js
+// App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingPage from './LandingPage';
 import OrderForm from './OrderForm';
 import AdminDashboard from './AdminDashBoard';
-import './App.css';
+
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/" element={<OrderForm />} />
+        <Route path="/" element={<LandingPage />} /> {/* Landing page */}
+        <Route path="/order" element={<OrderForm />} /> {/* Order form */}
+        <Route path="/admin" element={<AdminDashboard />} /> {/* Admin dashboard */}
       </Routes>
     </Router>
   );
