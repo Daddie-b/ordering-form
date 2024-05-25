@@ -79,33 +79,54 @@ function AdminDashboard() {
       <h2>Admin Dashboard</h2>
       <div className="cakes-list">
         <h3>Cakes List</h3>
-        <ul>
-          {cakes.map((cake) => (
-            <li key={cake._id}>
-              {cake.name} - ${cake.price}
-              <button onClick={() => handleDeleteCake(cake._id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cakes.map((cake) => (
+              <tr key={cake._id}>
+                <td>{cake.name}</td>
+                <td>${cake.price}</td>
+                <td>
+                  <button className="delete-button" onClick={() => handleDeleteCake(cake._id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                      <path fill="none" d="M0 0h24v24H0z"/>
+                      <path d="M19 6h-4l-1-1H10L9 6H5v2h14V6zM7 18v-8h10v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1zm9-4H8v-6h8z"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <div className="add-cake-form">
-        <h3>Add New Cake</h3>
-        <input
-          type="text"
-          name="name"
-          value={newCake.name}
-          onChange={handleChange}
-          placeholder="Cake Name"
-        />
-        <input
-          type="number"
-          name="price"
-          value={newCake.price}
-          onChange={handleChange}
-          placeholder="Cake Price"
-        />
-        <button onClick={handleAddCake}>Add Cake</button>
-      </div>
+  <h3>Add New Cake</h3>
+  <div className="input-group">
+    <input
+      type="text"
+      name="name"
+      value={newCake.name}
+      onChange={handleChange}
+      placeholder="Cake Name"
+      className="input-field"
+    />
+    <input
+      type="number"
+      name="price"
+      value={newCake.price}
+      onChange={handleChange}
+      placeholder="Cake Price"
+      className="input-field"
+    />
+    <button onClick={handleAddCake} className="add-cake-button">Add Cake</button>
+  </div>
+</div>
       <div className="orders-list">
         <h3>Orders List</h3>
         <table>
