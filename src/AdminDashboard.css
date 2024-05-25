@@ -372,3 +372,6 @@ tr:nth-child(even) {
   background-color: #218838;
   transform: scale(1.05);
 }
+.table-container {
+  overflow-x: auto;
+}

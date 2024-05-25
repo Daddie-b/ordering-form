@@ -1,4 +1,4 @@
-// src/AdminDashboard.js
+/* src/AdminDashboard.js */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminDashboard.css';
@@ -79,86 +79,90 @@ function AdminDashboard() {
       <h2>Admin Dashboard</h2>
       <div className="cakes-list">
         <h3>Cakes List</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cakes.map((cake) => (
-              <tr key={cake._id}>
-                <td>{cake.name}</td>
-                <td>${cake.price}</td>
-                <td>
-                  <button className="delete-button" onClick={() => handleDeleteCake(cake._id)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                      <path fill="none" d="M0 0h24v24H0z"/>
-                      <path d="M19 6h-4l-1-1H10L9 6H5v2h14V6zM7 18v-8h10v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1zm9-4H8v-6h8z"/>
-                    </svg>
-                  </button>
-                </td>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="add-cake-form">
-  <h3>Add New Cake</h3>
-  <div className="input-group">
-    <input
-      type="text"
-      name="name"
-      value={newCake.name}
-      onChange={handleChange}
-      placeholder="Cake Name"
-      className="input-field"
-    />
-    <input
-      type="number"
-      name="price"
-      value={newCake.price}
-      onChange={handleChange}
-      placeholder="Cake Price"
-      className="input-field"
-    />
-    <button onClick={handleAddCake} className="add-cake-button">Add Cake</button>
-  </div>
-</div>
-      <div className="orders-list">
-        <h3>Orders List</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Cake Type</th>
-              <th>Message</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendingOrders.map((order) => (
-              order.cakes.map((cake, index) => (
-                <tr key={`${order._id}-${index}`}>
-                  {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
-                  <td>{getCakeName(cake.cakeType)}</td>
-                  <td>{cake.message}</td>
-                  <td>{cake.quantity}</td>
+            </thead>
+            <tbody>
+              {cakes.map((cake) => (
+                <tr key={cake._id}>
+                  <td>{cake.name}</td>
                   <td>${cake.price}</td>
                   <td>
-                    <button onClick={() => handleCompleteOrder(order._id)} disabled={order.status === 'completed'}>
-                      {order.status === 'completed' ? 'Completed' : 'Complete Order'}
+                    <button className="delete-button" onClick={() => handleDeleteCake(cake._id)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="none" d="M0 0h24v24H0z"/>
+                        <path d="M19 6h-4l-1-1H10L9 6H5v2h14V6zM7 18v-8h10v8a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1zm9-4H8v-6h8z"/>
+                      </svg>
                     </button>
                   </td>
                 </tr>
-              ))
-            ))}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="add-cake-form">
+        <h3>Add New Cake</h3>
+        <div className="input-group">
+          <input
+            type="text"
+            name="name"
+            value={newCake.name}
+            onChange={handleChange}
+            placeholder="Cake Name"
+            className="input-field"
+          />
+          <input
+            type="number"
+            name="price"
+            value={newCake.price}
+            onChange={handleChange}
+            placeholder="Cake Price"
+            className="input-field"
+          />
+          <button onClick={handleAddCake} className="add-cake-button">Add Cake</button>
+        </div>
+      </div>
+      <div className="orders-list">
+        <h3>Orders List</h3>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Cake Type</th>
+                <th>Message</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingOrders.map((order) => (
+                order.cakes.map((cake, index) => (
+                  <tr key={`${order._id}-${index}`}>
+                    {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
+                    <td>{getCakeName(cake.cakeType)}</td>
+                    <td>{cake.message}</td>
+                    <td>{cake.quantity}</td>
+                    <td>${cake.price}</td>
+                    <td>
+                      <button onClick={() => handleCompleteOrder(order._id)} disabled={order.status === 'completed'}>
+                        {order.status === 'completed' ? 'Completed' : 'Complete Order'}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
