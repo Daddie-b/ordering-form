@@ -9,7 +9,7 @@ const orders = [];
 const cakes = [];
 
 app.post('/api/orders', (req, res) => {
-  const order = { ...req.body, _id: Date.now().toString() }; // Ensure unique _id
+  const order = { ...req.body, _id: Date.now().toString(), status: 'pending' }; // Ensure unique _id and add status
   orders.push(order);
   res.status(201).send(order);
 });
@@ -47,12 +47,13 @@ app.delete('/api/cakes/:cakeId', (req, res) => {
   }
 });
 
-app.delete('/api/orders/:orderId', (req, res) => {
+app.patch('/api/orders/:orderId', (req, res) => {
   const { orderId } = req.params;
-  const index = orders.findIndex(order => order._id === orderId);
-  if (index !== -1) {
-    orders.splice(index, 1);
-    res.sendStatus(204); // Success, no content
+  const { status } = req.body;
+  const order = orders.find(order => order._id === orderId);
+  if (order) {
+    order.status = status;
+    res.sendStatus(204);
   } else {
     res.status(404).send({ error: 'Order not found' });
   }

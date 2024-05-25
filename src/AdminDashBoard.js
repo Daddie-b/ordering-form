@@ -19,7 +19,6 @@ function AdminDashboard() {
         console.error('There was an error fetching the cakes!', error);
       });
 
-    // Fetch orders
     axios.get('http://localhost:5000/api/orders')
       .then((response) => {
         setOrders(response.data);
@@ -56,22 +55,23 @@ function AdminDashboard() {
   };
 
   const handleCompleteOrder = (orderId) => {
-    console.log(`Deleting order with ID: ${orderId}`);
-    axios.delete(`http://localhost:5000/api/orders/${orderId}`)
+    axios.patch(`http://localhost:5000/api/orders/${orderId}`, { status: 'completed' })
       .then(() => {
-        setOrders(prevOrders => prevOrders.filter(order => order._id !== orderId));
-        console.log(`Order with ID: ${orderId} deleted successfully`);
+        setOrders(prevOrders => prevOrders.map(order =>
+          order._id === orderId ? { ...order, status: 'completed' } : order
+        ));
       })
       .catch((error) => {
         console.error('There was an error completing the order!', error);
       });
   };
 
-  // Function to get cake name based on cakeType ID
   const getCakeName = (cakeType) => {
     const cake = cakes.find(cake => cake._id === cakeType);
     return cake ? cake.name : 'Unknown Cake';
   };
+
+  const pendingOrders = orders.filter(order => order.status !== 'completed');
 
   return (
     <div className="admin-dashboard-container">
@@ -119,7 +119,7 @@ function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {pendingOrders.map((order) => (
               order.cakes.map((cake, index) => (
                 <tr key={`${order._id}-${index}`}>
                   {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
@@ -128,7 +128,9 @@ function AdminDashboard() {
                   <td>{cake.quantity}</td>
                   <td>${cake.price}</td>
                   <td>
-                    <button onClick={() => handleCompleteOrder(order._id)}>Complete Order</button>
+                    <button onClick={() => handleCompleteOrder(order._id)} disabled={order.status === 'completed'}>
+                      {order.status === 'completed' ? 'Completed' : 'Complete Order'}
+                    </button>
                   </td>
                 </tr>
               ))
