@@ -1,51 +1,99 @@
 /* src/AdminDashboard.css */
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .admin-dashboard-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+  max-width: 900px;
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px;
+  box-sizing: border-box;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.cakes-list, .add-cake-form, .orders-list {
+  margin-bottom: 30px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+input {
+  margin-right: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  flex: 1;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f8f8;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .order-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .order-table th,
-  .order-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .order-table th {
-    background-color: #f2f2f2;
-  }
-  
-  .order-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  /* src/AdminDashboard.css */
-.admin-dashboard-container {
-    padding: 20px;
-  }
-  
-  .cakes-list, .add-cake-form, .orders-list {
-    margin-bottom: 20px;
-  }
-  
-  .orders-list table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .orders-list th, .orders-list td {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  .orders-list th {
-    background-color: #f2f2f2;
-    text-align: left;
-  }
-  
+}
