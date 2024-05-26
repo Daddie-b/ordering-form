@@ -14,7 +14,7 @@ body {
 .admin-dashboard-container {
   max-width: 900px;
   width: calc(100% - 250px); /* Adjust width to account for fixed left margin */
-  margin-right: 250px; /* Fixed left margin */
+  margin-left: 250px; /* Fixed left margin */
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
