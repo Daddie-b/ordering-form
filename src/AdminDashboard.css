@@ -82,18 +82,20 @@ input {
 .table-container {
   width: 100%;
   overflow-x: auto;
+  margin: 0 -20px; /* Ensure the table is centered with a negative margin */
+  padding: 0 20px; /* Add padding to align with other content */
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px; /* Ensures the table is wider than the container */
 }
 
 th, td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  min-width: 150px; /* Ensure columns are wide enough for readability */
 }
 
 th {
@@ -117,8 +119,13 @@ tr:nth-child(even) {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
   .admin-dashboard-container {
     padding: 10px;
+    margin: 10px;
   }
 
   h2 {
@@ -150,15 +157,25 @@ tr:nth-child(even) {
     padding: 10px;
   }
 
-  table {
-    display: block;
+  .table-container {
     overflow-x: auto;
-    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+    margin: 0 -10px; /* Adjust margins for smaller screens */
+    padding: 0 10px; /* Adjust padding for smaller screens */
+  }
+
+  table {
+    width: 100%;
+    display: table;
   }
 
   th, td {
     display: table-cell;
     white-space: nowrap;
+  }
+
+  th, td {
+    min-width: auto; /* Override min-width for smaller screens */
   }
 }
 
