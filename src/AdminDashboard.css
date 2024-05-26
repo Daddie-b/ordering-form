@@ -18,7 +18,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
-  margin: 20px auto; /* Center the container */
+  margin: 20px auto;
   box-sizing: border-box;
 }
 
@@ -79,9 +79,15 @@ input {
   flex: 1;
 }
 
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px; /* Ensures the table is wider than the container */
 }
 
 th, td {
@@ -139,59 +145,48 @@ tr:nth-child(even) {
     width: 100%;
   }
 
+  table, th, td {
+    font-size: 14px;
+    padding: 10px;
+  }
+
   table {
-    overflow-x: auto;
     display: block;
+    overflow-x: auto;
     white-space: nowrap;
   }
 
   th, td {
-    display: inline-block;
-    border: none;
-    vertical-align: top;
-    text-align: left;
+    display: table-cell;
+    white-space: nowrap;
   }
+}
 
-  th {
-    font-weight: bold;
-  }
-  
-  td::before {
-    content: attr(data-label) ": ";
-    font-weight: bold;
-  }
-  
-  th::before {
-    content: attr(data-label) ": ";
-    font-weight: bold;
-  }
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
 
-  .input-group {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
+.input-field {
+  flex: 1;
+  margin-right: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
 
-  .input-field {
-    flex: 1;
-    margin-right: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-  }
+.add-cake-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
 
-  .add-cake-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-  }
-
-  .add-cake-button:hover {
-    background-color: #218838;
-    transform: scale(1.05);
-  }
+.add-cake-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
 }
