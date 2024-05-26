@@ -18,7 +18,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
-  margin: 20px auto;
+  margin: 20px auto; /* Center the container with automatic margins */
   box-sizing: border-box;
 }
 
@@ -120,12 +120,13 @@ tr:nth-child(even) {
 /* Responsive Design */
 @media (max-width: 768px) {
   body {
-    padding: 10px;
+    padding: 10px; /* Add padding to the body for smaller screens */
   }
 
   .admin-dashboard-container {
     padding: 10px;
-    margin: 10px;
+    margin: 10px; /* Ensure margins are present on smaller screens */
+    width: calc(100% - 20px); /* Make the container responsive */
   }
 
   h2 {
