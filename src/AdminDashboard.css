@@ -6,20 +6,20 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Align items to the start horizontally */
   align-items: center;
   min-height: 100vh;
-  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .admin-dashboard-container {
   max-width: 900px;
-  width: 100%;
+  width: calc(100% - 250px); /* Adjust width to account for fixed left margin */
+  margin-right: 250px; /* Fixed left margin */
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
-  margin: 20px auto; /* Center the container with automatic margins */
+  margin-top: 20px; /* Ensure top margin */
   box-sizing: border-box;
 }
 
@@ -32,6 +32,7 @@ h2 {
 
 .cakes-list, .add-cake-form, .orders-list {
   margin-bottom: 30px;
+  padding: 0 20px; /* Add padding inside the container */
 }
 
 ul {
@@ -83,6 +84,7 @@ input {
 .table-container {
   width: 100%;
   overflow-x: auto;
+  padding: 0 20px; /* Add padding inside the table container */
 }
 
 table {
@@ -94,6 +96,7 @@ th, td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  min-width: 150px; /* Ensure columns are wide enough for readability */
 }
 
 th {
@@ -119,12 +122,14 @@ tr:nth-child(even) {
 @media (max-width: 768px) {
   body {
     padding: 10px; /* Add padding to the body for smaller screens */
+    justify-content: center; /* Center items horizontally */
   }
 
   .admin-dashboard-container {
     padding: 10px;
-    margin: 10px;
-    width: calc(100% - 20px); /* Make the container responsive */
+    margin: 10px; /* Ensure margins are present on smaller screens */
+    width: 100%; /* Make the container responsive */
+    margin-left: 0; /* Reset left margin */
   }
 
   h2 {
@@ -133,6 +138,7 @@ tr:nth-child(even) {
 
   .cakes-list, .add-cake-form, .orders-list {
     margin-bottom: 20px;
+    padding: 0 10px; /* Adjust padding for smaller screens */
   }
 
   button {
@@ -156,14 +162,24 @@ tr:nth-child(even) {
     padding: 10px;
   }
 
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+    padding: 0 10px; /* Adjust padding for smaller screens */
+  }
+
+  table {
+    width: 100%;
+    display: table;
+  }
+
   th, td {
     display: table-cell;
     white-space: nowrap;
   }
 
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+  th, td {
+    min-width: auto; /* Override min-width for smaller screens */
   }
 }
 
@@ -195,3 +211,4 @@ tr:nth-child(even) {
   background-color: #218838;
   transform: scale(1.05);
 }
+
