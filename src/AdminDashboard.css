@@ -9,6 +9,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .admin-dashboard-container {
@@ -82,8 +83,6 @@ input {
 .table-container {
   width: 100%;
   overflow-x: auto;
-  margin: 0 -20px; /* Ensure the table is centered with a negative margin */
-  padding: 0 20px; /* Add padding to align with other content */
 }
 
 table {
@@ -95,7 +94,6 @@ th, td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  min-width: 150px; /* Ensure columns are wide enough for readability */
 }
 
 th {
@@ -125,7 +123,7 @@ tr:nth-child(even) {
 
   .admin-dashboard-container {
     padding: 10px;
-    margin: 10px; /* Ensure margins are present on smaller screens */
+    margin: 10px;
     width: calc(100% - 20px); /* Make the container responsive */
   }
 
@@ -158,25 +156,14 @@ tr:nth-child(even) {
     padding: 10px;
   }
 
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
-    margin: 0 -10px; /* Adjust margins for smaller screens */
-    padding: 0 10px; /* Adjust padding for smaller screens */
-  }
-
-  table {
-    width: 100%;
-    display: table;
-  }
-
   th, td {
     display: table-cell;
     white-space: nowrap;
   }
 
-  th, td {
-    min-width: auto; /* Override min-width for smaller screens */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
   }
 }
 
