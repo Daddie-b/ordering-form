@@ -1,61 +1,116 @@
 const express = require('express');
 const cors = require('cors');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const orders = [];
-const cakes = [];
-
-app.post('/api/orders', (req, res) => {
-  const order = { ...req.body, _id: Date.now().toString(), status: 'pending' }; // Ensure unique _id and add status
-  orders.push(order);
-  res.status(201).send(order);
-});
-
-app.get('/api/orders', (req, res) => {
-  const ordersWithCakes = orders.map(order => {
-    const cake = cakes.find(cake => cake._id === order.cakeType);
-    return {
-      ...order,
-      cakeName: cake ? cake.name : 'Unknown Cake',
-      cakePrice: cake ? cake.price : 0
-    };
-  });
-  res.send(ordersWithCakes);
-});
-
-app.post('/api/cakes', (req, res) => {
-  const cake = { ...req.body, _id: Date.now().toString() }; // Ensure unique _id
-  cakes.push(cake);
-  res.status(201).send(cake);
-});
-
-app.get('/api/cakes', (req, res) => {
-  res.send(cakes);
-});
-
-app.delete('/api/cakes/:cakeId', (req, res) => {
-  const { cakeId } = req.params;
-  const index = cakes.findIndex(cake => cake._id === cakeId);
-  if (index !== -1) {
-    cakes.splice(index, 1);
-    res.sendStatus(204);
-  } else {
-    res.status(404).send({ error: 'Cake not found' });
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
   }
 });
 
-app.patch('/api/orders/:orderId', (req, res) => {
+async function connectDB() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB!");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB", error);
+    process.exit(1);
+  }
+}
+
+connectDB();
+
+const db = client.db('MugoMarbles'); // Replace with your actual database name
+const cakesCollection = db.collection('cakes');
+const ordersCollection = db.collection('orders');
+
+app.post('/api/orders', async (req, res) => {
+  const order = { ...req.body, status: 'pending' };
+  try {
+    const result = await ordersCollection.insertOne(order);
+    res.status(201).send(result.ops[0]);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to create order' });
+  }
+});
+
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await ordersCollection.find().toArray();
+    const ordersWithCakes = await Promise.all(
+      orders.map(async (order) => {
+        const cake = await cakesCollection.findOne({ _id: order.cakeType });
+        return {
+          ...order,
+          cakeName: cake ? cake.name : 'Unknown Cake',
+          cakePrice: cake ? cake.price : 0
+        };
+      })
+    );
+    res.send(ordersWithCakes);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to fetch orders' });
+  }
+});
+
+app.post('/api/cakes', async (req, res) => {
+  const cake = { ...req.body };
+  try {
+    const result = await cakesCollection.insertOne(cake);
+    res.status(201).send(result.ops[0]);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to create cake' });
+  }
+});
+
+app.get('/api/cakes', async (req, res) => {
+  try {
+    const cakes = await cakesCollection.find().toArray();
+    res.send(cakes);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to fetch cakes' });
+  }
+});
+
+app.delete('/api/cakes/:cakeId', async (req, res) => {
+  const { cakeId } = req.params;
+  try {
+    const result = await cakesCollection.deleteOne({ _id: cakeId });
+    if (result.deletedCount === 1) {
+      res.sendStatus(204);
+    } else {
+      res.status(404).send({ error: 'Cake not found' });
+    }
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to delete cake' });
+  }
+});
+
+app.patch('/api/orders/:orderId', async (req, res) => {
   const { orderId } = req.params;
   const { status } = req.body;
-  const order = orders.find(order => order._id === orderId);
-  if (order) {
-    order.status = status;
-    res.sendStatus(204);
-  } else {
-    res.status(404).send({ error: 'Order not found' });
+  try {
+    const result = await ordersCollection.updateOne(
+      { _id: orderId },
+      { $set: { status } }
+    );
+    if (result.modifiedCount === 1) {
+      res.sendStatus(204);
+    } else {
+      res.status(404).send({ error: 'Order not found' });
+    }
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to update order' });
   }
 });
 
