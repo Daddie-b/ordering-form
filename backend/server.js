@@ -30,7 +30,7 @@ async function connectDB() {
 
 connectDB();
 
-const db = client.db('your_database_name'); // Replace with your actual database name
+const db = client.db('MugoMarbles'); // Replace with your actual database name
 const cakesCollection = db.collection('cakes');
 const ordersCollection = db.collection('orders');
 
@@ -115,6 +115,6 @@ app.patch('/api/orders/:orderId', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
