@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminDashboard.css';
+
 function AdminDashboard() {
   const [cakes, setCakes] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -9,6 +10,7 @@ function AdminDashboard() {
     name: '',
     price: 0,
   });
+  const [showOrders, setShowOrders] = useState(false); // State to manage orders visibility
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/cakes')
@@ -128,41 +130,46 @@ function AdminDashboard() {
           <button onClick={handleAddCake} className="add-cake-button">Add Cake</button>
         </div>
       </div>
-      <div className="orders-list">
-        <h3>Orders List</h3>
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Cake Type</th>
-                <th>Message</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingOrders.map((order) => (
-                order.cakes.map((cake, index) => (
-                  <tr key={`${order._id}-${index}`}>
-                    {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
-                    <td>{getCakeName(cake.cakeType)}</td>
-                    <td>{cake.message}</td>
-                    <td>{cake.quantity}</td>
-                    <td>${cake.price}</td>
-                    <td>
-                      <button onClick={() => handleCompleteOrder(order._id)} disabled={order.status === 'completed'}>
-                        {order.status === 'completed' ? 'Completed' : 'Complete Order'}
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ))}
-            </tbody>
-          </table>
+      <button onClick={() => setShowOrders(!showOrders)} className="toggle-orders-button">
+        {showOrders ? 'Hide Orders' : 'Show Orders'}
+      </button>
+      {showOrders && (
+        <div className="orders-list">
+          <h3>Orders List</h3>
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Cake Type</th>
+                  <th>Message</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingOrders.map((order) => (
+                  order.cakes.map((cake, index) => (
+                    <tr key={`${order._id}-${index}`}>
+                      {index === 0 && <td rowSpan={order.cakes.length}>{order.name}</td>}
+                      <td>{getCakeName(cake.cakeType)}</td>
+                      <td>{cake.message}</td>
+                      <td>{cake.quantity}</td>
+                      <td>${cake.price}</td>
+                      <td>
+                        <button onClick={() => handleCompleteOrder(order._id)} disabled={order.status === 'completed'}>
+                          {order.status === 'completed' ? 'Completed' : 'Complete Order'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
