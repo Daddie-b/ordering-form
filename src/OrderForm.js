@@ -12,7 +12,7 @@ function OrderForm() {
   const [cakeOptions, setCakeOptions] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/cakes')
+    axios.get('https://ordering-form-backend.onrender.com/api/cakes')
       .then((response) => {
         setCakeOptions(response.data);
       })
@@ -44,7 +44,7 @@ function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/orders', formData);
+      await axios.post('https://ordering-form-backend.onrender.com/api/orders', formData);
       // Display a success message or redirect the user after successful order submission
       alert('Order placed successfully!');
       setFormData({

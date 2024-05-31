@@ -13,7 +13,7 @@ function AdminDashboard() {
   const [showOrders, setShowOrders] = useState(false); // State to manage orders visibility
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/cakes')
+    axios.get('https://ordering-form-backend.onrender.com/api/cakes')
       .then((response) => {
         setCakes(response.data);
       })
@@ -21,7 +21,7 @@ function AdminDashboard() {
         console.error('There was an error fetching the cakes!', error);
       });
 
-    axios.get('http://localhost:5000/api/orders')
+    axios.get('https://ordering-form-backend.onrender.com/api/orders')
       .then((response) => {
         setOrders(response.data);
       })
@@ -36,7 +36,7 @@ function AdminDashboard() {
   };
 
   const handleAddCake = () => {
-    axios.post('http://localhost:5000/api/cakes', newCake)
+    axios.post('https://ordering-form-backend.onrender.com/api/cakes', newCake)
       .then((response) => {
         setCakes([...cakes, response.data]);
         setNewCake({ name: '', price: 0 });
@@ -47,7 +47,7 @@ function AdminDashboard() {
   };
 
   const handleDeleteCake = (cakeId) => {
-    axios.delete(`http://localhost:5000/api/cakes/${cakeId}`)
+    axios.delete(`https://ordering-form-backend.onrender.com/api/cakes/${cakeId}`)
       .then(() => {
         setCakes(prevCakes => prevCakes.filter(cake => cake._id !== cakeId));
       })
@@ -57,7 +57,7 @@ function AdminDashboard() {
   };
 
   const handleCompleteOrder = (orderId) => {
-    axios.patch(`http://localhost:5000/api/orders/${orderId}`, { status: 'completed' })
+    axios.patch(`https://ordering-form-backend.onrender.com/api/orders/${orderId}`, { status: 'completed' })
       .then(() => {
         setOrders(prevOrders => prevOrders.map(order =>
           order._id === orderId ? { ...order, status: 'completed' } : order
