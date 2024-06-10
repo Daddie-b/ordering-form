@@ -30,7 +30,7 @@ async function connectDB() {
 
 connectDB();
 
-const db = client.db('MugoMarbles'); // Replace with your actual database name
+const db = client.db('MugoMarbles'); 
 const cakesCollection = db.collection('cakes');
 const ordersCollection = db.collection('orders');
 
