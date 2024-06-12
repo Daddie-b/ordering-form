@@ -1,7 +1,7 @@
 // LandingPage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AdminDashboard from './AdminDashBoard';
+//import AdminDashboard from './AdminDashBoard';
 import './LandingPage.css'; 
 
 function LandingPage() {

@@ -1,7 +1,7 @@
 /* src/Orders.js */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Orders.css';
+import './OrderForm';
 import { Link } from 'react-router-dom';
 
 function Orders() {
